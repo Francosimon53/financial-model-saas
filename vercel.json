@@ -1,20 +1,3 @@
 {
-    "buildCommand": "pnpm run vercel-build",
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/index.html"
-        }
-    ],
-    "headers": [
-        {
-            "source": "/api/(.*)",
-            "headers": [
-                {
-                    "key": "Cache-Control",
-                    "value": "s-maxage=0"
-                }
-            ]
-        }
-    ]
+    "buildCommand": "pnpm run vercel-build"
 }
