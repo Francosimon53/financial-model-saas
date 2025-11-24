@@ -104,17 +104,11 @@ export async function getUserByOpenId(openId: string) {
 export async function createProject(userId: number, project: Omit<InsertProject, "userId">) {
   const db = await getDb();
 
-  // In development mode, return mock data if database is not available
+  // Use mock data if database is not available (works in both dev and production)
   if (!db) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn("[Database] Creating project with mock data - DATABASE_URL not configured");
-      // Return a mock result that simulates successful insertion
-      return {
-        insertId: Math.floor(Math.random() * 1000) + 1,
-        affectedRows: 1,
-      };
-    }
-    throw new Error("Database not available. Please configure DATABASE_URL in .env file");
+    console.log("[Mock DB] Creating project without database - using in-memory storage");
+    const { mockDb } = await import("./mock-db");
+    return await mockDb.createProject(userId, project);
   }
 
   const result = await db.insert(projects).values({ ...project, userId });
@@ -123,7 +117,11 @@ export async function createProject(userId: number, project: Omit<InsertProject,
 
 export async function getUserProjects(userId: number) {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) {
+    console.log("[Mock DB] Getting projects without database - using in-memory storage");
+    const { mockDb } = await import("./mock-db");
+    return await mockDb.getUserProjects(userId);
+  }
 
   return await db.select().from(projects).where(eq(projects.userId, userId));
 }
