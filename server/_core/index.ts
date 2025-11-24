@@ -30,14 +30,41 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
-  
+
   // CRITICAL: Register Stripe webhook BEFORE body parser middleware
   const { registerStripeWebhook } = await import("../stripe-webhook");
   registerStripeWebhook(app);
-  
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
+
+  // CORS configuration to allow frontend to communicate with backend
+  app.use((req, res, next) => {
+    // Allow requests from local development or Vercel deployment
+    const allowedOrigins = [
+      "http://localhost:5174",
+      "http://localhost:5173",
+      "http://localhost:3000"
+    ];
+
+    // In production, allow the request origin if it's from Vercel
+    const origin = req.headers.origin;
+    if (origin && (allowedOrigins.includes(origin) || origin.includes(".vercel.app"))) {
+      res.header("Access-Control-Allow-Origin", origin);
+    }
+
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    // Handle preflight requests
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
   // tRPC API

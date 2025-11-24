@@ -39,7 +39,7 @@ export default function Dashboard({ projectId }: DashboardProps) {
 
   const handleExportPDF = () => {
     if (!incomeStatements || !cashFlowStatements || !project) return;
-    
+
     const isData = incomeStatements.map((is: any) => ({
       month: is.month,
       revenue: is.revenue,
@@ -52,14 +52,14 @@ export default function Dashboard({ projectId }: DashboardProps) {
       capex: is.capex,
       netIncome: is.netIncome,
     }));
-    
+
     exportIncomeStatementToPDF(project.name, isData);
     toast.success("Income Statement exportado a PDF");
   };
 
   const handleExportExcel = () => {
     if (!incomeStatements || !cashFlowStatements || !project) return;
-    
+
     const isData = incomeStatements.map((is: any) => ({
       month: is.month,
       revenue: is.revenue,
@@ -72,7 +72,7 @@ export default function Dashboard({ projectId }: DashboardProps) {
       capex: is.capex,
       netIncome: is.netIncome,
     }));
-    
+
     const cfData = cashFlowStatements.map((cf: any) => ({
       month: cf.month,
       operatingCashFlow: cf.operatingCashFlow,
@@ -81,7 +81,7 @@ export default function Dashboard({ projectId }: DashboardProps) {
       netCashFlow: cf.netCashFlow,
       cumulativeCashFlow: cf.cumulativeCashFlow,
     }));
-    
+
     exportToExcel(project.name, isData, cfData);
     toast.success("Estados financieros exportados a Excel");
   };
@@ -104,7 +104,7 @@ export default function Dashboard({ projectId }: DashboardProps) {
             <p className="text-muted-foreground">{project.name}</p>
           </div>
         </div>
-        
+
         <div className="flex gap-2">
           <Button onClick={handleExportPDF} variant="outline">
             <Download className="mr-2 h-4 w-4" />
@@ -126,10 +126,10 @@ export default function Dashboard({ projectId }: DashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${kpis?.averageEbitda ? (kpis.averageEbitda / 100).toFixed(0) : "0"}
+              ${kpis?.totalEBITDA ? (kpis.totalEBITDA / 100).toFixed(0) : "0"}
             </div>
             <p className="text-xs text-muted-foreground">
-              {kpis?.averageEbitda && kpis.averageEbitda > 0 ? (
+              {kpis?.totalEBITDA && kpis.totalEBITDA > 0 ? (
                 <span className="text-green-600 flex items-center">
                   <TrendingUp className="mr-1 h-3 w-3" />
                   Positivo
@@ -151,7 +151,7 @@ export default function Dashboard({ projectId }: DashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {kpis?.ebitdaMargin ? `${kpis.ebitdaMargin.toFixed(1)}%` : "0%"}
+              {kpis?.averageEBITDAMargin ? `${kpis.averageEBITDAMargin.toFixed(1)}%` : "0%"}
             </div>
             <p className="text-xs text-muted-foreground">
               Margen sobre ingresos
@@ -181,7 +181,7 @@ export default function Dashboard({ projectId }: DashboardProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {kpis?.breakEvenMonth || "N/A"}
+              {kpis?.breakEvenMonth ? new Date(kpis.breakEvenMonth).toLocaleDateString('es-ES', { month: 'short', year: 'numeric' }) : "N/A"}
             </div>
             <p className="text-xs text-muted-foreground">
               Mes de equilibrio

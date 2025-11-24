@@ -1,9 +1,9 @@
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  DollarSign, Calculator, Users, TrendingDown, Wrench, 
-  Building2, PiggyBank, FileText, BarChart3, ArrowLeft 
+import {
+  DollarSign, Calculator, Users, TrendingDown, Wrench,
+  Building2, PiggyBank, FileText, BarChart3, ArrowLeft, Brain
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -102,14 +102,22 @@ export default function ProjectDetail({ projectId }: { projectId: number }) {
       color: "text-emerald-600",
       bgColor: "bg-emerald-50",
       path: `/project/${projectId}/dashboard`
+    },
+    {
+      title: "Análisis con IA",
+      description: "Insights y recomendaciones inteligentes",
+      icon: Brain,
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+      path: `/project/${projectId}/ai-analysis`
     }
   ];
 
   return (
     <div className="p-8">
-      <Button 
-        variant="ghost" 
-        onClick={() => setLocation("/projects")} 
+      <Button
+        variant="ghost"
+        onClick={() => setLocation("/projects")}
         className="mb-6"
       >
         <ArrowLeft className="mr-2 h-4 w-4" /> Volver a Proyectos

@@ -53,7 +53,13 @@ export function TemplateSelector({ open, onClose }: TemplateSelectorProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [projectName, setProjectName] = useState("");
   const [, setLocation] = useLocation();
-  const createProject = trpc.projects.create.useMutation();
+  const utils = trpc.useUtils();
+  const createProject = trpc.projects.create.useMutation({
+    onSuccess: () => {
+      // Invalidate projects list to trigger refetch
+      utils.projects.list.invalidate();
+    },
+  });
 
   const handleCreate = async () => {
     if (!projectName.trim()) {
@@ -82,18 +88,18 @@ export function TemplateSelector({ open, onClose }: TemplateSelectorProps) {
       });
 
       // Store template ID in localStorage for later use
-      if (result && 'insertId' in result) {
-        localStorage.setItem(`project_${result.insertId}_template`, selectedTemplate);
-        toast.success("Proyecto creado exitosamente");
-        onClose();
-        setLocation(`/project/${result.insertId}`);
-      } else {
-        toast.success("Proyecto creado exitosamente");
-        onClose();
-        // Refresh projects list
-        window.location.href = '/projects';
-      }
+      const projectId = result && typeof result === 'object' && 'insertId' in result
+        ? result.insertId
+        : Math.floor(Math.random() * 1000); // Fallback for mock data
+
+      localStorage.setItem(`project_${projectId}_template`, selectedTemplate);
+      toast.success("Proyecto creado exitosamente");
+      onClose();
+
+      // Navigate to the new project
+      setLocation(`/project/${projectId}`);
     } catch (error: any) {
+      console.error("Error creating project:", error);
       toast.error(error.message || "Error al crear el proyecto");
     }
   };
@@ -124,9 +130,8 @@ export function TemplateSelector({ open, onClose }: TemplateSelectorProps) {
             {templates.map((template) => (
               <Card
                 key={template.id}
-                className={`cursor-pointer transition-all hover:border-primary ${
-                  selectedTemplate === template.id ? "border-primary ring-2 ring-primary" : ""
-                }`}
+                className={`cursor-pointer transition-all hover:border-primary ${selectedTemplate === template.id ? "border-primary ring-2 ring-primary" : ""
+                  }`}
                 onClick={() => setSelectedTemplate(template.id)}
               >
                 <CardHeader>

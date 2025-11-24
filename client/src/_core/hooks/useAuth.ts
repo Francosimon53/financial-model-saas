@@ -1,5 +1,6 @@
 import { getLoginUrl } from "@/const";
 import { trpc } from "@/lib/trpc";
+import { User } from "@/lib/types";
 import { TRPCClientError } from "@trpc/client";
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -42,15 +43,39 @@ export function useAuth(options?: UseAuthOptions) {
   }, [logoutMutation, utils]);
 
   const state = useMemo(() => {
+    // Cast to User type to ensure all properties (including subscriptionPlan) are recognized
+    const user = meQuery.data as User | null | undefined;
+
+    // In development, if no user is returned, use a mock user
+    const isDev = import.meta.env.MODE === "development";
+    const mockUser = isDev && !user && !meQuery.isLoading ? {
+      id: 1,
+      openId: "dev-user-1",
+      email: "developer@example.com",
+      name: "Developer User",
+      loginMethod: "dev",
+      role: "user" as const,
+      subscriptionPlan: "free",
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStatus: "active",
+      subscriptionEndsAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    } as User : null;
+
+    const currentUser = user ?? mockUser;
+
     localStorage.setItem(
       "manus-runtime-user-info",
-      JSON.stringify(meQuery.data)
+      JSON.stringify(currentUser)
     );
     return {
-      user: meQuery.data ?? null,
+      user: currentUser,
       loading: meQuery.isLoading || logoutMutation.isPending,
       error: meQuery.error ?? logoutMutation.error ?? null,
-      isAuthenticated: Boolean(meQuery.data),
+      isAuthenticated: Boolean(currentUser),
     };
   }, [
     meQuery.data,

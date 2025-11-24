@@ -19,7 +19,7 @@ export type FileContent = {
   type: "file_url";
   file_url: {
     url: string;
-    mime_type?: "audio/mpeg" | "audio/wav" | "application/pdf" | "audio/mp4" | "video/mp4" ;
+    mime_type?: "audio/mpeg" | "audio/wav" | "application/pdf" | "audio/mp4" | "video/mp4";
   };
 };
 
@@ -209,10 +209,20 @@ const normalizeToolChoice = (
   return toolChoice;
 };
 
-const resolveApiUrl = () =>
-  ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
-    ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
+const resolveApiUrl = () => {
+  // If BUILT_IN_FORGE_API_URL is set, use that
+  if (ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0) {
+    return `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`;
+  }
+
+  // If using OPENAI_API_KEY (from process.env.OPENAI_API_KEY), use OpenAI endpoint
+  if (process.env.OPENAI_API_KEY && !process.env.BUILT_IN_FORGE_API_KEY) {
+    return "https://api.openai.com/v1/chat/completions";
+  }
+
+  // Default to Forge/Manus endpoint
+  return "https://forge.manus.im/v1/chat/completions";
+};
 
 const assertApiKey = () => {
   if (!ENV.forgeApiKey) {
@@ -279,8 +289,13 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     response_format,
   } = params;
 
+  // Determine which model to use based on the API endpoint
+  const model = (process.env.OPENAI_API_KEY && !process.env.BUILT_IN_FORGE_API_KEY)
+    ? "gpt-4o-mini"  // Use OpenAI model
+    : "gemini-2.5-flash";  // Use Gemini model for Forge
+
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
+    model,
     messages: messages.map(normalizeMessage),
   };
 
@@ -296,10 +311,12 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 32768
-  payload.thinking = {
-    "budget_tokens": 128
-  }
+  // Use smaller max_tokens for OpenAI models (16384 max for gpt-4o-mini)
+  payload.max_tokens = (process.env.OPENAI_API_KEY && !process.env.BUILT_IN_FORGE_API_KEY) ? 16384 : 32768;
+  // Note: "thinking" parameter is only for Gemini/Forge, skipping for broader compatibility
+  // payload.thinking = {
+  //   "budget_tokens": 128
+  // };
 
   const normalizedResponseFormat = normalizeResponseFormat({
     responseFormat,

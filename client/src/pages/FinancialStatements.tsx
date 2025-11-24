@@ -9,8 +9,8 @@ import { toast } from "sonner";
 
 export default function FinancialStatements({ projectId }: { projectId: number }) {
   const [, setLocation] = useLocation();
-  const { data: incomeStatements, isLoading: isLoadingIS, refetch: refetchIS } = trpc.statements.incomeStatement.useQuery({ projectId });
-  const { data: cashFlowStatements, isLoading: isLoadingCF, refetch: refetchCF } = trpc.statements.cashFlow.useQuery({ projectId });
+  const { data: incomeStatements, isLoading: isLoadingIS, refetch: refetchIS } = trpc.financial.incomeStatement.useQuery({ projectId });
+  const { data: cashFlowStatements, isLoading: isLoadingCF, refetch: refetchCF } = trpc.financial.cashFlow.useQuery({ projectId });
 
   // Aggregate totals from arrays
   const incomeStatement = incomeStatements && incomeStatements.length > 0 ? {
@@ -108,84 +108,84 @@ export default function FinancialStatements({ projectId }: { projectId: number }
                         ${(incomeStatement.totalRevenue / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- COGS (Costos Directos)</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.totalCOGS / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold">
                       <TableCell>Margen Bruto</TableCell>
                       <TableCell className="text-right">
                         ${(incomeStatement.grossMargin / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- Salarios</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.totalSalaries / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- OPEX</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.totalOPEX / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- Gastos Fijos</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.totalFixedExpenses / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-bold bg-blue-50">
                       <TableCell>EBITDA</TableCell>
                       <TableCell className="text-right text-blue-600">
                         ${(incomeStatement.ebitda / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- Depreciación</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.depreciation / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold">
                       <TableCell>EBIT</TableCell>
                       <TableCell className="text-right">
                         ${(incomeStatement.ebit / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- Intereses</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.interestExpense / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold">
                       <TableCell>Utilidad Antes de Impuestos</TableCell>
                       <TableCell className="text-right">
                         ${(incomeStatement.ebt / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- Impuestos</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(incomeStatement.taxes / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-bold text-lg bg-indigo-50">
                       <TableCell>Utilidad Neta</TableCell>
                       <TableCell className="text-right text-indigo-600">
@@ -222,78 +222,78 @@ export default function FinancialStatements({ projectId }: { projectId: number }
                     <TableRow className="font-semibold bg-gray-100">
                       <TableCell colSpan={2}>Flujo de Efectivo de Operaciones</TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">Utilidad Neta</TableCell>
                       <TableCell className="text-right">
                         ${(cashFlow.netIncome / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">+ Depreciación</TableCell>
                       <TableCell className="text-right text-green-600">
                         ${(cashFlow.depreciation / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold">
                       <TableCell>Flujo de Operaciones</TableCell>
                       <TableCell className="text-right">
                         ${(cashFlow.operatingCashFlow / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold bg-gray-100">
                       <TableCell colSpan={2}>Flujo de Efectivo de Inversiones</TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- CAPEX</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(cashFlow.capex / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold">
                       <TableCell>Flujo de Inversiones</TableCell>
                       <TableCell className="text-right">
                         ${(cashFlow.investingCashFlow / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold bg-gray-100">
                       <TableCell colSpan={2}>Flujo de Efectivo de Financiamiento</TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">+ Deuda</TableCell>
                       <TableCell className="text-right text-green-600">
                         ${(cashFlow.debtProceeds / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">+ Equity</TableCell>
                       <TableCell className="text-right text-green-600">
                         ${(cashFlow.equityProceeds / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow>
                       <TableCell className="pl-8">- Pago de Intereses</TableCell>
                       <TableCell className="text-right text-red-600">
                         ${(cashFlow.interestPayments / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-semibold">
                       <TableCell>Flujo de Financiamiento</TableCell>
                       <TableCell className="text-right">
                         ${(cashFlow.financingCashFlow / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </TableCell>
                     </TableRow>
-                    
+
                     <TableRow className="font-bold text-lg bg-indigo-50">
                       <TableCell>Flujo de Efectivo Neto</TableCell>
                       <TableCell className="text-right text-indigo-600">

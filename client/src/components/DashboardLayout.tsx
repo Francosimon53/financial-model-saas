@@ -168,18 +168,18 @@ function DashboardLayoutContent({
           className="border-r-0"
           disableTransition={isResizing}
         >
-          <SidebarHeader className="h-16 justify-center">
+          <SidebarHeader className="h-16 justify-center border-b border-sidebar-border/50">
             <div className="flex items-center gap-3 pl-2 group-data-[collapsible=icon]:px-0 transition-all w-full">
               {isCollapsed ? (
                 <div className="relative h-8 w-8 shrink-0 group">
                   <img
                     src={APP_LOGO}
-                    className="h-8 w-8 rounded-md object-cover ring-1 ring-border"
+                    className="h-8 w-8 rounded-lg object-cover shadow-sm ring-1 ring-black/5 dark:ring-white/10"
                     alt="Logo"
                   />
                   <button
                     onClick={toggleSidebar}
-                    className="absolute inset-0 flex items-center justify-center bg-accent rounded-md ring-1 ring-border opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    className="absolute inset-0 flex items-center justify-center bg-accent rounded-lg ring-1 ring-border opacity-0 group-hover:opacity-100 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <PanelLeft className="h-4 w-4 text-foreground" />
                   </button>
@@ -189,16 +189,16 @@ function DashboardLayoutContent({
                   <div className="flex items-center gap-3 min-w-0">
                     <img
                       src={APP_LOGO}
-                      className="h-8 w-8 rounded-md object-cover ring-1 ring-border shrink-0"
+                      className="h-8 w-8 rounded-lg object-cover shadow-sm ring-1 ring-black/5 dark:ring-white/10 shrink-0"
                       alt="Logo"
                     />
-                    <span className="font-semibold tracking-tight truncate">
+                    <span className="font-semibold tracking-tight truncate text-sidebar-foreground">
                       {APP_TITLE}
                     </span>
                   </div>
                   <button
                     onClick={toggleSidebar}
-                    className="ml-auto h-8 w-8 flex items-center justify-center hover:bg-accent rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
+                    className="ml-auto h-8 w-8 flex items-center justify-center hover:bg-sidebar-accent rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring shrink-0"
                   >
                     <PanelLeft className="h-4 w-4 text-muted-foreground" />
                   </button>

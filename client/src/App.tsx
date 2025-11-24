@@ -18,103 +18,135 @@ import Funding from "./pages/Funding";
 import FinancialStatements from "./pages/FinancialStatements";
 import Dashboard from "./pages/Dashboard";
 import Pricing from "./pages/Pricing";
+import AIAnalysis from "./pages/AIAnalysis";
+
+import { AnimatePresence, motion } from "framer-motion";
+import { useLocation } from "wouter";
 
 function Router() {
+  const [location] = useLocation();
+
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/pricing" component={Pricing} />
-      
-      {/* Protected routes with dashboard layout */}
-      <Route path="/projects">
-        <DashboardLayout>
-          <Projects />
-        </DashboardLayout>
-      </Route>
-      
-      <Route path="/project/:id">
-        {(params) => (
-          <DashboardLayout>
-            <ProjectDetail projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/revenue">
-        {(params) => (
-          <DashboardLayout>
-            <Revenue projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/cogs">
-        {(params) => (
-          <DashboardLayout>
-            <COGS projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/salaries">
-        {(params) => (
-          <DashboardLayout>
-            <Salaries projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/opex">
-        {(params) => (
-          <DashboardLayout>
-            <OPEX projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/fixed-expenses">
-        {(params) => (
-          <DashboardLayout>
-            <FixedExpenses projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/capex">
-        {(params) => (
-          <DashboardLayout>
-            <CAPEX projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/funding">
-        {(params) => (
-          <DashboardLayout>
-            <Funding projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/statements">
-        {(params) => (
-          <DashboardLayout>
-            <FinancialStatements projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/project/:id/dashboard">
-        {(params) => (
-          <DashboardLayout>
-            <Dashboard projectId={parseInt(params.id)} />
-          </DashboardLayout>
-        )}
-      </Route>
-      
-      <Route path="/404" component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
+        transition={{ duration: 0.2 }}
+        className="min-h-screen"
+      >
+        <Switch location={location}>
+          <Route path="/" component={Home} />
+          <Route path="/pricing" component={Pricing} />
+
+          {/* Dashboard route - redirects to projects */}
+          <Route path="/dashboard">
+            <DashboardLayout>
+              <Projects />
+            </DashboardLayout>
+          </Route>
+
+          {/* Protected routes with dashboard layout */}
+          <Route path="/projects">
+            <DashboardLayout>
+              <Projects />
+            </DashboardLayout>
+          </Route>
+
+          <Route path="/project/:id">
+            {(params) => (
+              <DashboardLayout>
+                <ProjectDetail projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/revenue">
+            {(params) => (
+              <DashboardLayout>
+                <Revenue projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/cogs">
+            {(params) => (
+              <DashboardLayout>
+                <COGS projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/salaries">
+            {(params) => (
+              <DashboardLayout>
+                <Salaries projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/opex">
+            {(params) => (
+              <DashboardLayout>
+                <OPEX projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/fixed-expenses">
+            {(params) => (
+              <DashboardLayout>
+                <FixedExpenses projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/capex">
+            {(params) => (
+              <DashboardLayout>
+                <CAPEX projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/funding">
+            {(params) => (
+              <DashboardLayout>
+                <Funding projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/statements">
+            {(params) => (
+              <DashboardLayout>
+                <FinancialStatements projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/dashboard">
+            {(params) => (
+              <DashboardLayout>
+                <Dashboard projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/project/:id/ai-analysis">
+            {(params) => (
+              <DashboardLayout>
+                <AIAnalysis projectId={parseInt(params.id)} />
+              </DashboardLayout>
+            )}
+          </Route>
+
+          <Route path="/404" component={NotFound} />
+          <Route component={NotFound} />
+        </Switch>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -128,7 +160,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider
         defaultTheme="light"
-        // switchable
+      // switchable
       >
         <TooltipProvider>
           <Toaster />

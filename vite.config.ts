@@ -1,17 +1,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
-import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
+import { resolve } from "path";
+import { fileURLToPath } from "url";
 
-// Configuración básica de Vite para React + Tailwind + Manus UI
+// Define __dirname for ES modules
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
 export default defineConfig({
-  plugins: [
-    jsxLocPlugin(),
-    tailwindcss(),
-    react(),
-  ],
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": resolve(__dirname, "client/src"),
+      "@shared": resolve(__dirname, "shared"),
+    },
+  },
+  root: "client",
   build: {
-    // ya sabemos que tu build sale a dist/public
-    outDir: "dist/public",
+    outDir: "../dist",
+    emptyOutDir: true,
   },
 });

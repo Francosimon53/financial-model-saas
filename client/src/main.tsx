@@ -40,7 +40,8 @@ queryClient.getMutationCache().subscribe(event => {
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
-      url: "/api/trpc",
+      // Use relative URL in production (Vercel), absolute in development
+      url: import.meta.env.PROD ? "/api/trpc" : "http://localhost:3000/api/trpc",
       transformer: superjson,
       fetch(input, init) {
         return globalThis.fetch(input, {
